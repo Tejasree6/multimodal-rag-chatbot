@@ -1,0 +1,33 @@
+{
+  "name": "multimodal-rag-chatbot-vercel",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "ingest": "ts-node scripts/ingest.ts"
+  },
+  "dependencies": {
+    "ai": "latest",
+    "langchain": "latest",
+    "next": "14.2.4",
+    "openai": "latest",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@pinecone-database/pinecone": "latest",
+    "zod": "latest",
+    "pdf-parse": "latest",
+    "tesseract.js": "latest",
+    "sharp": "latest",
+    "@vercel/blob": "latest",
+    "groq-sdk": "latest"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5",
+    "@types/node": "20.12.12",
+    "@types/react": "18.2.79",
+    "@types/react-dom": "18.2.25",
+    "ts-node": "10.9.2"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "functions": {
+    "app/api/ingest/route.ts": {
+      "runtime": "nodejs18.x",
+      "memory": 1536,
+      "maxDuration": 60
+    },
+    "app/api/upload/route.ts": {
+      "runtime": "edge"
+    },
+    "app/api/chat/route.ts": {
+      "runtime": "edge"
+    },
+    "app/api/generate-image/route.ts": {
+      "runtime": "edge"
+    }
+  }
+}
