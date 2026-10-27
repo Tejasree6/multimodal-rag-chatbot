@@ -1,0 +1,100 @@
+diff --git a/app/api/chat/route.ts b/app/api/chat/route.ts
+index dc466f1..abc510c 100644
+--- a/app/api/chat/route.ts
++++ b/app/api/chat/route.ts
+@@ -3,7 +3,7 @@ import { getOpenAI, getGroq, MODELS } from "@/lib/aiProviders";
+ import { embed } from "@/lib/embeddings";
+ import { similaritySearch } from "@/lib/pinecone";
+ 
+-export const runtime = "edge";
++export const runtime = "nodejs";
+ 
+ type Msg = { role: "user"|"assistant"|"system"; content: any };
+ 
+diff --git a/app/api/generate-image/route.ts b/app/api/generate-image/route.ts
+index 18a8ec4..1b19658 100644
+--- a/app/api/generate-image/route.ts
++++ b/app/api/generate-image/route.ts
+@@ -11,6 +11,6 @@ export async function POST(req: NextRequest) {
+     prompt,
+     size: "1024x1024",
+   });
+-  const b64 = res.data[0].b64_json!;
++  const b64 = res.data?.[0]?.b64_json!;
+   return NextResponse.json({ imageBase64: b64 });
+ }
+diff --git a/app/layout.tsx b/app/layout.tsx
+new file mode 100644
+index 0000000..10c3b9f
+--- /dev/null
++++ b/app/layout.tsx
+@@ -0,0 +1,4 @@
++export const metadata = { title: "Multimodal RAG Chatbot" };
++export default function RootLayout({ children }: { children: React.ReactNode }) {
++  return (<html lang="en"><body>{children}</body></html>);
++}
+diff --git a/next.config.mjs b/next.config.mjs
+index 0546ed0..6703f7c 100644
+--- a/next.config.mjs
++++ b/next.config.mjs
+@@ -2,6 +2,7 @@
+ const nextConfig = {
+   experimental: {
+     serverActions: { bodySizeLimit: '10mb' },
++    serverComponentsExternalPackages: ['pdf-parse', 'sharp', 'tesseract.js'],
+   },
+   images: {
+     remotePatterns: [
+diff --git a/package.json b/package.json
+index 25e9b23..cf25b8e 100644
+--- a/package.json
++++ b/package.json
+@@ -9,25 +9,26 @@
+     "ingest": "ts-node scripts/ingest.ts"
+   },
+   "dependencies": {
++    "@pinecone-database/pinecone": "^4.1.0",
++    "@types/pdf-parse": "^1.1.5",
++    "@vercel/blob": "latest",
+     "ai": "latest",
++    "groq-sdk": "latest",
+     "langchain": "latest",
+     "next": "14.2.4",
+     "openai": "latest",
++    "pdf-parse": "^1.1.1",
+     "react": "18.3.1",
+     "react-dom": "18.3.1",
+-    "@pinecone-database/pinecone": "latest",
+-    "zod": "latest",
+-    "pdf-parse": "latest",
+-    "tesseract.js": "latest",
+     "sharp": "latest",
+-    "@vercel/blob": "latest",
+-    "groq-sdk": "latest"
++    "tesseract.js": "latest",
++    "zod": "latest"
+   },
+   "devDependencies": {
+-    "typescript": "5.4.5",
+     "@types/node": "20.12.12",
+     "@types/react": "18.2.79",
+     "@types/react-dom": "18.2.25",
+-    "ts-node": "10.9.2"
++    "ts-node": "10.9.2",
++    "typescript": "5.4.5"
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/scripts/ingest.ts b/scripts/ingest.ts
+index 8648248..0118728 100644
+--- a/scripts/ingest.ts
++++ b/scripts/ingest.ts
+@@ -1,7 +1,6 @@
+ import fs from "node:fs/promises";
+ import os from "node:os";
+ import path from "node:path";
+-import fetch from "node-fetch";
+ import { extractFromPDF, extractFromImage, upsertChunks } from "../lib/rag";
+ 
+ async function downloadToTmp(url: string) {
