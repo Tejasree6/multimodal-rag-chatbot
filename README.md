@@ -2,7 +2,7 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=<REPLACE_WITH_YOUR_REPO_URL>&project-name=multimodal-rag-chatbot&repository-name=multimodal-rag-chatbot&env=OPENAI_API_KEY,PINECONE_API_KEY,PINECONE_INDEX,GROQ_API_KEY&envDescription=Set%20your%20API%20keys%20and%20Pinecone%20index%20name&envLink=.)
 
-> Tip: Push this folder to a GitHub repo, replace `<REPLACE_WITH_YOUR_REPO_URL>` in the button above, then click it to deploy.
+
 
 ## Features
 - Chat with **RAG** (Pinecone) over PDFs **and** images (OCR).
